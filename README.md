@@ -26,7 +26,7 @@ Using urllib.request I'll be pulling data into Notebook and store it in the file
 # Reads the data from provided URL and saves it to
 import urllib.request
 # Open a connection URL using urllib
-urllib.request.urlretrieve("https://github.com/suma-gitrep/suma-bigdata-project/blob/main/An_Eel_by_the_Tail.txt" , "/tmp/suma.txt")
+urllib.request.urlretrieve("https://github.com/suma-gitrep/suma-bigdata-project/blob/main/Story.txt" , "/tmp/suma.txt")
 
 ```
 
