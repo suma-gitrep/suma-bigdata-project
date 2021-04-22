@@ -21,7 +21,6 @@
 <br> 
 Using urllib.request I'll be pulling data into Notebook and store it in the file named "suma.txt".  I have pulled the data from 'The Monk : A romance' by M.G. Lewis.
 <br>
-w--------------------------
 
 ```
 # Reads the data from provided URL and saves it to
