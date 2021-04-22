@@ -1,76 +1,125 @@
-# suma-bigdata-project
-This project is based on displaying the word count in a file using PySpark and Databricks in cloud.
-# Author: **[Suma Soma]()**
-# Tools and Languages:
-### Tools: 
-Pyspark, Databricks Notebook, Pandas, MatPlotLib, Seaborn 
-### Language: 
-Python
-**Important terms to know**: 
-- SparkContext(sc) - entry point to any spark functionality.
-- Resilient Distributed Dataset (RDD) - A distributed collection of Objects
-## Input Source is taken from:
-https://www.gutenberg.org/files/65126/65126-0.txt
-# Process and steps:
-### step 1:
-The first and most important move is to pull the data using the urllib.request library. The information retrieved is saved in a temporary tab. We're storing this information in a temporary file called sumasoma.txt. I'm using the following source file/text data: An Eel by the Tail is available as a Project Gutenberg eBook.
+# SumaSoma-Bigdata-Project
+
+## Author : [Suma Soma](www.google.com)
+
+## Text Data Source
+
+- [The Project Gutenberg eBook of The Monk: A Romance, by M. G. Lewis](https://www.gutenberg.org/files/601/601-h/601-h.htm)
+
+## Tools and Languages:
+
+- Python Programming Language
+- DataBricks Cloud Platform
+- Spark processing engine
+
+## NoteBook Link from Databricks :
+
+[Databricks](https://community.cloud.databricks.com/?o=738325624314186#notebook/123542383545008/command/900976778029719)
+
+## Steps
+
+<br> 
+Using urllib.request I'll be pulling data into Notebook and store it in the file named "suma.txt".  I have pulled the data from 'The Monk : A romance' by M.G. Lewis.
+<br>
+w--------------------------
+
 ```
+# Reads the data from provided URL and saves it to
 import urllib.request
-urllib.request.urlretrieve("https://github.com/suma-gitrep/suma-bigdata-project/blob/main/An%20Eel%20by%20the%20Tail.txt" , "/tmp/sumasoma.txt")
+# Open a connection URL using urllib
+urllib.request.urlretrieve("https://github.com/Teju2404/tejaswi-bigdata-final-project/blob/main/TheLittleWarrior.txt" , "/tmp/suma.txt")
+
 ```
-### step 2:
-We'll use dbutils.fs.mv to transfer the data to a new place now that it's been processed. Two arguments are used in the dbutils.fs.mv program. The first parameter specifies the text file to be transferred, and the second specifies where the file should be moved.
+
+For saving the book , we'll be using dbutils.fs.mv method which takes two arguments which is to send the book from its current location to new location.
+
 ```
-dbutils.fs.mv("file:/tmp/sumasoma.txt","dbfs:/data/sumasoma.txt")
+dbutils.fs.mv("file:/tmp/suma.txt","dbfs:/data/suma.txt")
 ```
-### step 3:
-The next move is to use sc.textfile to import the data into Spark.
+
+Finally we'll be transferring the file into Spark using RDDs.
+We'll be transforming data into Resilient Distributed Databases(RDDs) as Spark holds data in RDDs.
+
 ```
-sumasomaRDD = sc.textFile("dbfs:/data/sumasoma.txt")
+sumaRDD = sc.textFile("dbfs:/data/suma.txt")
 ```
-## Cleaning the data:
-### step 4:
-Capitalization, punctuation, phrases, and stopwords are actually present in the ebook. The first step in determining the word count is to flatmap and remove capitalization and spaces.
+
+## Cleaning the Data
+
+The data which we took contains sentences,punctuations and stopwords. To clean the data,we split each line by spaces and changing the letters to lower-case and filtering empty lines and breaking sentences into words.
+
 ```
-# flatmap each line to words
-suma_wordsRDD = sumasomaRDD.flatMap(lambda line : line.lower().strip().split(" "))
+wordsRDD=sumaRDD.flatMap(lambda line : line.lower().strip().split(" "))
 ```
-### step 5:
-The punctuation is then removed. We're going to use the re library to get rid of any characters that don't look like letters.
+
+Remove all the punctuations. This can be done using regular expression which looks for anything that is not a letter.
+To use Regex , library re needs to be imported.
+
 ```
 import re
-# remove punctutation
-cleaned_tokens_RDD = suma_wordsRDD.map(lambda w: re.sub(r'[^a-zA-Z]','',w))
+cleanTokensRDD = wordsRDD.map(lambda w: re.sub(r'[^a-zA-Z]','',w))
 ```
-### step 6:
-The next step will be to delete any stopwords that remain after the punctuations have been deleted. The StopWordsRemover library from pyspark.ml.feature is used to accomplish this.
+
+Last task is to remove stopwords. By importing StopWordsRemover PySpark knows what words are stopwords and will filter out the words.
+
 ```
 from pyspark.ml.feature import StopWordsRemover
-words_remover = StopWordsRemover()
-stop_words = words_remover.getStopWords()
-sumasomaWords_RDD=cleaned_tokens_RDD.filter(lambda wrds: wrds not in stopwords)
+remover =StopWordsRemover()
+stopwords = remover.getStopWords()
+cleanwordRDD=cleanTokensRDD.filter(lambda w: w not in stopwords)
 ```
-### step 7:
-We'll filter out everything that looks like an empty element to get rid of any empty elements.
-```
-# removing all the empty spaces from the data
-suma_RemoveSpace_RDD = sumasomaWords_RDD.filter(lambda x: x != "")
-```
-## Process the data
-### step 8:
-We'll start by mapping our words into intermediate key-value pairs. e.g. (word,1). We move on to the next step, which involves converting the pairs into a word count.
-```
-#maps the words to key value pairs
-IKVPairsRDD= suma_RemoveSpace_RDD.map(lambda word: (word,1))
 
-# reduceByKey() to get (word,count) results
-sumasoma_wordcount_RDD = IKVPairsRDD.reduceByKey(lambda acc, value: acc+value)
+## Processing the data
+
+We will map our words into Key-Value pairs('word',1) and then count how many times word occurs.
+
 ```
-### step 9:
-### step 10:
-The collect() is used to retrieve all the elements from my dataset.
-## Charting Results:
-Pandas, MatPlotLib, and Seaborn has been used to visualize our performance.
-# References:
+IKVPairsRDD= cleanwordRDD.map(lambda word: (word,1))
+```
 
+Reduce by Key : The key is the word in this case. we'll save the word and when it repeats , we will remove it and update count.
 
+```
+wordCountRDD = IKVPairsRDD.reduceByKey(lambda acc, value: acc+value)
+```
+
+For more complicated processing, we will get back to python to retrieve all elements from data.
+
+```
+results = wordCountRDD.collect()
+print(results)
+```
+
+## Finding Useful Data
+
+- Sorting the words in the descending order and print the results to check the first 13 results in descending order.
+
+```
+final_results = wordCountRDD.map(lambda x: (x[1], x[0])).sortByKey(False).take(13)
+print(final_results)
+```
+
+- To Graph the data we use the library mathplotlib.Using this any type of data can be set to x-axis and y-axis.
+
+```
+mostCommon=results[1:5]
+word,count = zip(*mostCommon)
+import matplotlib.pyplot as plt
+fig = plt.figure()
+plt.bar(word,count,color="blue")
+plt.xlabel("Number of times used")
+plt.ylabel("Most used")
+plt.title("Most used words in The Monk")
+plt.show()
+```
+
+# Results
+
+![Sorting](https://github.com/Teju2404/tejaswi-bigdata-final-project/blob/main/sort.PNG)
+![Results](https://github.com/Teju2404/tejaswi-bigdata-final-project/blob/main/results.PNG)
+
+# References
+
+- [Matplotlib](https://dzone.com/articles/types-of-matplotlib-in-python)
+- [Python](https://www.analyticsvidhya.com/blog/2020/02/beginner-guide-matplotlib-data-visualization-exploration-python/)
+- [Dbutils](https://docs.microsoft.com/en-us/azure/databricks/dev-tools/databricks-utils)
