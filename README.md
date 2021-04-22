@@ -1,6 +1,6 @@
 # SumaSoma-Bigdata-Project
 
-## Author : [Suma Soma](www.google.com)
+## Author : [Suma Soma](https://github.com/suma-gitrep)
 
 ## Text Data Source
 
@@ -14,7 +14,7 @@
 
 ## NoteBook Link from Databricks :
 
-[Databricks](https://community.cloud.databricks.com/?o=738325624314186#notebook/123542383545008/command/900976778029719)
+[Databricks](https://community.cloud.databricks.com/?o=5582687885568786#notebook/2979601970661147/command/2979601970661160)
 
 ## Steps
 
@@ -27,7 +27,7 @@ w--------------------------
 # Reads the data from provided URL and saves it to
 import urllib.request
 # Open a connection URL using urllib
-urllib.request.urlretrieve("https://github.com/Teju2404/tejaswi-bigdata-final-project/blob/main/TheLittleWarrior.txt" , "/tmp/suma.txt")
+urllib.request.urlretrieve("https://github.com/suma-gitrep/suma-bigdata-project/blob/main/An_Eel_by_the_Tail.txt" , "/tmp/suma.txt")
 
 ```
 
@@ -115,11 +115,11 @@ plt.show()
 
 # Results
 
-![Sorting](https://github.com/Teju2404/tejaswi-bigdata-final-project/blob/main/sort.PNG)
-![Results](https://github.com/Teju2404/tejaswi-bigdata-final-project/blob/main/results.PNG)
+![Sorting](https://github.com/suma-gitrep/suma-bigdata-project/blob/main/Sorting.PNG)
+![Results](https://github.com/suma-gitrep/suma-bigdata-project/blob/main/Charting.PNG)
 
 # References
 
 - [Matplotlib](https://dzone.com/articles/types-of-matplotlib-in-python)
 - [Python](https://www.analyticsvidhya.com/blog/2020/02/beginner-guide-matplotlib-data-visualization-exploration-python/)
-- [Dbutils](https://docs.microsoft.com/en-us/azure/databricks/dev-tools/databricks-utils)
+- [PySpark](https://databricks.com/glossary/pyspark)
